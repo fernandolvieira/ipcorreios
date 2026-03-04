@@ -4,143 +4,106 @@
     <meta charset="UTF-8">
     <title>TCP/IP vs Correios - Prof. Fernando</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #f0f2f5; color: #333; margin: 0; padding: 20px; text-align: center; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; color: #333; margin: 0; padding: 10px; text-align: center; }
         .comparison-container { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; max-width: 1000px; margin: 0 auto; }
-        
-        /* Estilos dos Painéis */
-        .panel { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-top: 5px solid #0078d4; position: relative; min-height: 400px; }
-        .post { border-top-color: #ffce00; } /* Cor dos Correios */
-        
-        h3 { margin-top: 0; color: #555; text-transform: uppercase; font-size: 0.9rem; letter-spacing: 1px; }
-        
-        /* Representação do Pacote/Carta */
-        .envelope { 
-            width: 180px; height: 100px; background: #fff; border: 2px solid #333; margin: 20px auto; 
-            position: relative; transition: 0.5s; display: flex; flex-direction: column; justify-content: center; font-size: 0.7rem; padding: 5px;
-        }
-        .header-area { background: #e1e1e1; border-bottom: 1px solid #333; padding: 2px; font-weight: bold; }
-        
-        /* Camadas */
-        .layer-box { margin: 10px 0; padding: 10px; border: 1px dashed #ccc; border-radius: 5px; font-size: 0.8rem; }
-        .active-layer { background: #e3f2fd; border: 2px solid #2196f3; font-weight: bold; }
-
-        .controls { margin-bottom: 30px; display: flex; justify-content: center; gap: 10px; }
-        button { padding: 12px 24px; cursor: pointer; border: none; border-radius: 6px; background: #2196f3; color: white; font-weight: bold; transition: 0.3s; }
-        button:hover { background: #1976d2; }
-        button:disabled { background: #ccc; cursor: not-allowed; }
-
-        /* Animação de Caminho */
-        .truck-icon { position: absolute; font-size: 1.5rem; display: none; z-index: 10; }
-        #log { margin-top: 20px; font-family: monospace; background: #222; color: #00ff00; padding: 15px; border-radius: 8px; text-align: left; height: 80px; overflow-y: auto; }
+        .panel { background: white; border-radius: 12px; padding: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-top: 5px solid #0078d4; min-height: 380px; }
+        .post { border-top-color: #ffce00; }
+        h3 { margin-top: 0; color: #555; font-size: 0.9rem; }
+        .envelope { width: 200px; height: 110px; background: #fff; border: 2px solid #333; margin: 20px auto; display: flex; flex-direction: column; font-size: 0.75rem; overflow: hidden; }
+        .header-area { background: #333; color: #fff; padding: 4px; font-weight: bold; }
+        .layer-box { margin: 8px 0; padding: 8px; border: 1px dashed #ccc; border-radius: 5px; font-size: 0.8rem; transition: 0.3s; }
+        .active-layer { background: #e3f2fd; border: 2px solid #2196f3; font-weight: bold; color: #1565c0; }
+        .controls { margin-bottom: 20px; padding: 15px; }
+        button { padding: 12px 24px; cursor: pointer; border: none; border-radius: 6px; background: #2196f3; color: white; font-weight: bold; }
+        #log { margin-top: 15px; font-family: monospace; background: #222; color: #00ff00; padding: 15px; border-radius: 8px; text-align: left; min-height: 60px; }
+        .truck-icon { position: absolute; font-size: 2rem; display: none; z-index: 100; transition: transform 2s linear; }
     </style>
 </head>
 <body>
 
-    <h2>Simulador Didático: O Fluxo da Informação</h2>
-    <p>Compare como um e-mail atravessa a rede vs. como uma carta atravessa o país.</p>
+    <h2>Analogia Técnica: Protocolos vs Logística</h2>
 
     <div class="controls">
-        <button id="btn-next" onclick="nextStep()">Avançar Etapa</button>
-        <button style="background: #666;" onclick="location.reload()">Resetar</button>
+        <button id="btn-action" onclick="handleStep()">INICIAR ENCAPSULAMENTO</button>
+        <button style="background: #666;" onclick="location.reload()">REINICIAR</button>
     </div>
 
     <div class="comparison-container">
         <div class="panel" id="panel-tcp">
-            <h3>🌐 Protocolo TCP/IP</h3>
-            <div id="tcp-layer-4" class="layer-box">Camada de Transporte (Porta/Segmento)</div>
-            <div id="tcp-layer-3" class="layer-box">Camada de Internet (Endereço IP)</div>
-            <div id="tcp-layer-2" class="layer-box">Camada de Rede (MAC Address/Frames)</div>
-            
-            <div class="envelope" id="digital-packet">
-                <div class="header-area" id="tcp-header">DADOS</div>
-                <div id="tcp-body">"Olá, mundo!"</div>
+            <h3>🌐 MODELO TCP/IP</h3>
+            <div id="tcp-l-4" class="layer-box">Camada 4: Transporte (Porta/Serviço)</div>
+            <div id="tcp-l-3" class="layer-box">Camada 3: Internet (Endereçamento IP)</div>
+            <div id="tcp-l-2" class="layer-box">Camada 2: Enlace (Meio Físico)</div>
+            <div class="envelope">
+                <div class="header-area" id="tcp-head">DADOS BRUTOS</div>
+                <div style="padding:10px">"mensagem_exemplo.txt"</div>
             </div>
         </div>
 
         <div class="panel post" id="panel-post">
-            <h3>📯 Sistema de Correios</h3>
-            <div id="post-layer-4" class="layer-box">Destinatário (Apartamento/Sala)</div>
-            <div id="post-layer-3" class="layer-box">Endereçamento (Rua/CEP)</div>
-            <div id="post-layer-2" class="layer-box">Logística (Caminhão/Roteiro)</div>
-
-            <div class="envelope" id="physical-letter">
-                <div class="header-area" id="post-header">CONTEÚDO</div>
-                <div id="post-body">"Carta Escrita"</div>
+            <h3>📯 SISTEMA POSTAL</h3>
+            <div id="post-l-4" class="layer-box">Destinatário (Nº Apto / Sala)</div>
+            <div id="post-l-3" class="layer-box">Endereço (Rua / CEP)</div>
+            <div id="post-l-2" class="layer-box">Transporte (Caminhão / Rota)</div>
+            <div class="envelope">
+                <div class="header-area" id="post-head">CONTEÚDO</div>
+                <div style="padding:10px">"Carta manuscrita"</div>
             </div>
         </div>
     </div>
 
-    <div id="log">> Aguardando início do envio...</div>
+    <div id="log">> Aguardando início do fluxo...</div>
     <div id="truck" class="truck-icon">🚚</div>
 
     <script>
-        let currentStep = 0;
-        const steps = [
-            { 
-                log: "APLICAÇÃO: Os dados brutos são criados.",
-                tcp: "DADOS", post: "CARTA",
-                highlight: 4
-            },
-            { 
-                log: "TRANSPORTE: TCP define a porta (Ex: 80) | CORREIOS definem o AP/Sala.",
-                tcp: "TCP PORT: 80", post: "DEST: AP 402",
-                highlight: 4
-            },
-            { 
-                log: "REDE/INTERNET: IP define o destino (Ex: 192.168.1.1) | CORREIOS definem o CEP.",
-                tcp: "IP: 200.150.10.5", post: "CEP: 20000-123",
-                highlight: 3
-            },
-            { 
-                log: "ENLACE/LOGÍSTICA: O pacote é colocado no meio físico (Cabo/Caminhão).",
-                tcp: "FRAME ETHERNET", post: "MALOTE POSTAL",
-                highlight: 2
-            }
+        let step = 0;
+        const dataFlow = [
+            { log: "TRANSPORTE: Definindo a 'Porta' de destino vs 'Apartamento'.", tcp: "PORTA: 443 (HTTPS)", post: "APTO: 102", layer: 4 },
+            { log: "INTERNET: Definindo o 'IP' de destino vs 'CEP'.", tcp: "IP: 192.168.0.50", post: "CEP: 20040-010", layer: 3 },
+            { log: "ENLACE: Preparando o quadro (Frame) vs O Malote de viagem.", tcp: "FRAME ETHERNET", post: "MALOTE DE CARGA", layer: 2 }
         ];
 
-        function nextStep() {
-            if (currentStep >= steps.length) {
+        function handleStep() {
+            if (step < dataFlow.length) {
+                const info = dataFlow[step];
+                
+                // Atualiza Headers
+                document.getElementById('tcp-head').innerText = info.tcp;
+                document.getElementById('post-head').innerText = info.post;
+                
+                // Destaca Camadas
+                document.querySelectorAll('.layer-box').forEach(l => l.classList.remove('active-layer'));
+                document.getElementById(`tcp-l-${info.layer}`).classList.add('active-layer');
+                document.getElementById(`post-l-${info.layer}`).classList.add('active-layer');
+                
+                document.getElementById('log').innerText = "> " + info.log;
+                step++;
+                
+                if(step === dataFlow.length) {
+                    document.getElementById('btn-action').innerText = "ENVIAR PACOTE";
+                }
+            } else {
                 animateDelivery();
-                return;
-            }
-
-            const s = steps[currentStep];
-            
-            // Atualiza Interface TCP
-            document.getElementById('tcp-header').innerText = s.tcp;
-            document.querySelectorAll('#panel-tcp .layer-box').forEach(el => el.classList.remove('active-layer'));
-            document.getElementById(`tcp-layer-${s.highlight}`).classList.add('active-layer');
-
-            // Atualiza Interface Correios
-            document.getElementById('post-header').innerText = s.post;
-            document.querySelectorAll('#panel-post .layer-box').forEach(el => el.classList.remove('active-layer'));
-            document.getElementById(`post-layer-${s.highlight}`).classList.add('active-layer');
-
-            document.getElementById('log').innerText = "> " + s.log;
-            
-            currentStep++;
-            if(currentStep === steps.length) {
-                document.getElementById('btn-next').innerText = "Enviar e Rotear";
             }
         }
 
         function animateDelivery() {
             const truck = document.getElementById('truck');
-            const log = document.getElementById('log');
-            log.innerText = "> ROTEAMENTO: O pacote está atravessando os roteadores/centros de distribuição...";
+            const btn = document.getElementById('btn-action');
+            btn.disabled = true;
+            
+            document.getElementById('log').innerText = "> ROTEAMENTO: Pacote em trânsito pelos nós da rede...";
             
             truck.style.display = "block";
-            truck.style.top = "70%";
+            truck.style.top = "50%";
             truck.style.left = "10%";
             
             setTimeout(() => {
-                truck.style.transition = "all 2s ease-in-out";
-                truck.style.left = "85%";
+                truck.style.transform = "translateX(700px)";
             }, 100);
 
             setTimeout(() => {
-                log.innerText = "> ENTREGA CONCLUÍDA: O handshake TCP foi realizado / O protocolo de entrega foi assinado.";
-                document.getElementById('btn-next').disabled = true;
+                document.getElementById('log').innerText = "> ENTREGA: ACK recebido / Protocolo assinado. Sucesso!";
             }, 2100);
         }
     </script>
